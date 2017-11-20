@@ -75,6 +75,7 @@ export default class SketchPad extends Component {
   }
 
   onMouseDown(e) {
+    console.log('onMouseDown');
     const data = this.tool.onMouseDown(...this.getCursorPosition(e), this.props.color, this.props.size, this.props.fillColor);
     data && data[0] && this.props.onItemStart && this.props.onItemStart.apply(null, data);
     if (this.props.onDebouncedItemChange) {
@@ -89,11 +90,13 @@ export default class SketchPad extends Component {
   }
 
   onMouseMove(e) {
+    console.log('onMouseMove');
     const data = this.tool.onMouseMove(...this.getCursorPosition(e));
     data && data[0] && this.props.onEveryItemChange && this.props.onEveryItemChange.apply(null, data);
   }
 
   onMouseUp(e) {
+    console.log('onMouseUp');
     const data = this.tool.onMouseUp(...this.getCursorPosition(e));
     data && data[0] && this.props.onCompleteItem && this.props.onCompleteItem.apply(null, data);
     if (this.props.onDebouncedItemChange) {
@@ -104,9 +107,11 @@ export default class SketchPad extends Component {
 
   getCursorPosition(e) {
     const {top, left} = this.canvas.getBoundingClientRect();
+    let x = e.clientX || e.touches[0].pageX;
+    let y = e.clientY || e.touches[0].pageY;
     return [
-      e.clientX - left,
-      e.clientY - top
+      x - left,
+      y - top
     ];
   }
 
@@ -120,6 +125,9 @@ export default class SketchPad extends Component {
         onMouseMove={this.onMouseMove}
         onMouseOut={this.onMouseUp}
         onMouseUp={this.onMouseUp}
+        onTouchStart={this.onMouseDown}
+        onTouchMove={this.onMouseMove}
+        onTouchEnd={this.onMouseUp}
         width={width}
         height={height}
       />
